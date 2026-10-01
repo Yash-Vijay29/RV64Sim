@@ -1,11 +1,8 @@
-//
-// Created by yash on 10/1/26.
-//
-
 #include "cpu.h"
 #include <fstream>
 #include <filesystem>
 #include <print>
+#include <stdexcept>
 
 CPU::CPU()
     :memory(MEMORY_SIZE)
@@ -19,15 +16,13 @@ void CPU::loadProgram(const char* filePath)
     std::ifstream file(filePath,std::ios::binary);
     if (!file)
     {
-        std::println(stderr,"Error Reading program: {}", filePath);
-        return;
+        throw std::runtime_error("Could not open program file");
     }
     std::println("Program Read, allocating memory to Program");
     const auto fileSize = std::filesystem::file_size(filePath);
     if (LOAD_ADDRESS + fileSize > MEMORY_SIZE)
     {
-        std::println(stderr,"Error: Program size exceeds memory size");
-        return;
+        throw std::runtime_error("Program size exceeds memory size");
     }
     std::println("Program allocated memory successfully");
 
