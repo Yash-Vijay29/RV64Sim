@@ -1,16 +1,16 @@
-//
-// Created by yash on 10/1/26.
-//
-
-#ifndef RV64_SIMULATOR_CPU_H
-#define RV64_SIMULATOR_CPU_H
-
-#endif // RV64_SIMULATOR_CPU_H
 #pragma once
+#include <cstdint>
+#include <vector>
+
 class CPU
 {
     public:
         CPU();
-        void loadProgram(char* filePath);
+        void loadProgram(const char* filePath);
         void run();
+    private:
+        static constexpr uint64_t LOAD_ADDRESS = 0x1000;
+        static constexpr uint64_t MEMORY_SIZE = 64*1024*1024;
+        std::vector<uint8_t> memory;
+        uint64_t pc;
 };

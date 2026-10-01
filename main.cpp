@@ -9,9 +9,9 @@ int main(int argc, char* argv[])
         std::println(stderr,"Usage: fakecpu <program.bin>");
         return 1;
     }
-    CPU cpu;
     try
     {
+        CPU cpu;
        cpu.loadProgram(argv[1]);
        cpu.run();
     } catch (const std::exception& e){
