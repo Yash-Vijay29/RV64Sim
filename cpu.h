@@ -10,9 +10,11 @@ class CPU
         void run();
         uint32_t fetch();
         void decode(uint32_t instruction);
+        uint8_t classify(uint32_t opcode);
     private:
         static constexpr uint64_t LOAD_ADDRESS = 0x1000;
         static constexpr uint64_t MEMORY_SIZE = 64*1024*1024;
         std::vector<uint8_t> memory;
         uint64_t pc;
+        uint64_t programEnd;
 };

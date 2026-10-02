@@ -24,6 +24,7 @@ void CPU::loadProgram(const char* filePath)
     {
         throw std::runtime_error("Program size exceeds memory size");
     }
+    programEnd = LOAD_ADDRESS + fileSize;
     std::println("Program allocated memory successfully");
 
     file.read(reinterpret_cast<char*>(memory.data()+LOAD_ADDRESS), static_cast<std::streamsize>(fileSize));
@@ -52,11 +53,29 @@ uint32_t CPU::fetch()
 
 void CPU::decode(uint32_t instruction)
 {
+    std::println("Instruction classification start");
     uint32_t opcode = instruction & 0x7F;
-    uint32_t rd     = (instruction >> 7)  & 0x1F;
-    uint32_t funct3 = (instruction >> 12) & 0x07;
-    uint32_t rs1    = (instruction >> 15) & 0x1F;
-    uint32_t rs2    = (instruction >> 20) & 0x1F;
-    uint32_t funct7 = (instruction >> 25) & 0x7F;
-    std::println("Opcode: {}, rd: {}, funct3: {}, rs1: {}, rs2: {}, funct7: {}",opcode,rd,funct3,rs1,rs2,funct7);
+    uint8_t type = classify(opcode); // look at classify function to see what type of instruction it corresponds to
+    // todo: Add helper type specific decoder and execution functions
+    //std::println("Opcode: {}, rd: {}, funct3: {}, rs1: {}, rs2: {}, funct7: {}",opcode,rd,funct3,rs1,rs2,funct7);
+}
+
+uint8_t CPU::classify(uint32_t opcode)
+{
+    switch (opcode)
+    {
+        case 0b0110011: return 0; break; // R type
+        case 0b0010011: return 1; break; // I type
+        case 0b0011011: return 2; break; // I type 64 bit word
+        case 0b0000011: return 3; break; // I type Load
+        case 0b1100111: return 4; break; // I type Jump
+        case 0b0100011: return 5; break; // S type
+        case 0b1100011: return 6; break; // SB type
+        case 0b0110111: return 7; break; // U type load immediate
+        case 0b0010111: return 8; break; // U type add upper immediate
+        case 0b1101111: return 9; break; // U J type Jump and Link
+        case 0b1110011: return 10; break; // I type Enviroment
+    }
+    throw std::runtime_error("Invalid opcode");
+    return 11;
 }
