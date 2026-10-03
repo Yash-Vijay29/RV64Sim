@@ -55,27 +55,30 @@ void CPU::decode(uint32_t instruction)
 {
     std::println("Instruction classification start");
     uint32_t opcode = instruction & 0x7F;
-    uint8_t type = classify(opcode); // look at classify function to see what type of instruction it corresponds to
+    RiscvFormat type = classify(opcode); // look at classify function to see what type of instruction it corresponds to
     // todo: Add helper type specific decoder and execution functions
     //std::println("Opcode: {}, rd: {}, funct3: {}, rs1: {}, rs2: {}, funct7: {}",opcode,rd,funct3,rs1,rs2,funct7);
 }
 
-uint8_t CPU::classify(uint32_t opcode)
+CPU::RiscvFormat CPU::classify(uint32_t opcode)
 {
-    switch (opcode)
-    {
-        case 0b0110011: return 0; break; // R type
-        case 0b0010011: return 1; break; // I type
-        case 0b0011011: return 2; break; // I type 64 bit word
-        case 0b0000011: return 3; break; // I type Load
-        case 0b1100111: return 4; break; // I type Jump
-        case 0b0100011: return 5; break; // S type
-        case 0b1100011: return 6; break; // SB type
-        case 0b0110111: return 7; break; // U type load immediate
-        case 0b0010111: return 8; break; // U type add upper immediate
-        case 0b1101111: return 9; break; // U J type Jump and Link
-        case 0b1110011: return 10; break; // I type Enviroment
+    opcode = (opcode >> 2) & 0x1F;
+    switch (opcode) {
+    case 0b01100: [[fallthrough]];
+    case 0b01110: [[fallthrough]];
+    case 0b01111: return RiscvFormat::R_Type;
+    case 0b00000: [[fallthrough]]; // Loads
+    case 0b00100: [[fallthrough]];
+    case 0b00110: [[fallthrough]];
+    case 0b11001: [[fallthrough]];
+    case 0b11100: return RiscvFormat::I_Type;
+    case 0b01000: [[fallthrough]];
+    case 0b01001: return RiscvFormat::S_Type;
+    case 0b11000: return RiscvFormat::B_Type;
+    case 0b01101: [[fallthrough]];
+    case 0b00101: return RiscvFormat::U_Type;
+    case 0b11011: return RiscvFormat::J_Type;
+    default:      return RiscvFormat::Unknown;
     }
-    throw std::runtime_error("Invalid opcode");
-    return 11;
+    throw std::runtime_error("Invalid Error");
 }
