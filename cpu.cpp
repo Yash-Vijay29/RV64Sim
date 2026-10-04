@@ -12,7 +12,7 @@ CPU::CPU()
 
 void CPU::loadProgram(const char* filePath)
 {
-    std::println("Program Reading started.. Reading {}", filePath);
+    std::println("Program Reading started.. Reading file {}", filePath);
     std::ifstream file(filePath,std::ios::binary);
     if (!file)
     {
