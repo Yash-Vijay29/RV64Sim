@@ -7,7 +7,7 @@
 CPU::CPU()
     :memory(MEMORY_SIZE)
 {
-    std::println("CPU created.. allocating {} as memory to CPU", MEMORY_SIZE);
+    std::println("CPU created. allocating {} as memory to CPU", MEMORY_SIZE);
 }
 
 void CPU::loadProgram(const char* filePath)
